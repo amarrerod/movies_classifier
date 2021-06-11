@@ -1,7 +1,5 @@
 """Main module."""
 
-from movies_classifier.preprocessing import *
+from movies_classifier.preprocessing import create_datasets
 
-df = load_dataset()
-X_train, X_test, y_train, y_test = split_dataset(df)
-X_train, y_train = preprocess_dataset(X_train, y_train)
+X_train, X_test, y_train, y_test = create_datasets()

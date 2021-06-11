@@ -1,13 +1,14 @@
 
 import pandas as pd
-from pandas.core.algorithms import quantile
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.prepocessing import QuantileTransformer, StandardScaler, MultiLabelBinarizer
+from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
+from movies_classifier.transformers import Categorical, Cat2Numeric, Label
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
 
-
-_DF_PATH = 'movies.csv'
+_DF_PATH = './movies_classifier/data/movies.csv'
 
 
 def load_dataset(path=_DF_PATH):
@@ -26,57 +27,58 @@ def split_dataset(df: pd.DataFrame):
         Devuelve de la forma X_train, X_test, y_train, y_test
     """
     train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
-    X_train, y_train = train_set['IMDb'].copy(), train_set.drop('IMDb', axis=1)
-    X_test, y_test = test_set['IMDb'].copy(), test_set.drop('IMDb', axis=1)
+    X_train, y_train = train_set.drop('IMDb', axis=1), train_set['IMDb'].copy()
+    X_test, y_test = test_set.drop('IMDb', axis=1), test_set['IMDb'].copy()
     return X_train, X_test, y_train, y_test
 
 
-def preprocess_dataset(X, y):
-    labels_med = y.median()
-    y.fillna(labels_med, inplace=True)
-    y_norm = y.values.reshape(len(y), 1)
-    quantile = QuantileTransformer(output_distribution='normal')
-    y_norm = quantile.fit_transform(y_norm)
-    y = pd.Series(y_norm.reshape(len(y_norm)))
+def preprocess_dataset(X_train, X_test, y_train, y_test):
+    """
+        Realiza el preprocesado de los atributos del dataset
+        para poder aplicar distintos algoritmos de ML
+    """
+    num_attrbs = ["Year", "Age", "Rotten Tomatoes", "Netflix",
+                  "Hulu", "Prime Video", "Disney+", "Runtime"]
+    cat_attrbs = ["Genres", "Country", "Language"]
 
-    X.loc[X['Age'] == 'all', 'Age'] = '18+'
-    X['Age'] = X['Age'].apply(lambda x: float(
-        x[:-1]) if isinstance(x, str) else float(x))
-    X['Rotten Tomatoes'] = X['Rotten Tomatoes'].map(
-        lambda x: x if type(x) is float else float(x[:-1]))
+    label_trans = Label()
+    label_trans.fit(y_train)
+    y_train = label_trans.transform(y_train)
 
-    imputer = SimpleImputer(strategy='median')
-    # OJO Separamos atributos de tipo object
-    X_cat = X[["Genres", "Country", "Language"]].copy()
-    X = X.drop(["Genres", "Country", "Language"], axis=1)
-    # Entrenamos el modelo SimpleImputer para que calcule la mediana de cada atributo
-    imputer.fit(X_cat)
-    X_num = imputer.transform(X)
-    X = pd.DataFrame(X_num, columns=X.columns, index=X.index)
+    numeric_pipe = Pipeline([
+        ('cat_to_num', Cat2Numeric()),
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler()),
+    ])
+    full_pipeline = ColumnTransformer([
+        ('numeric', numeric_pipe, num_attrbs),
+        ('categorical', Categorical(), cat_attrbs)
+    ])
 
-    scaler = StandardScaler()
-    cols_to_scale = ['Year', 'Age', 'Rotten Tomatoes', 'Runtime']
-    X[cols_to_scale] = scaler.fit_transform(X[cols_to_scale])
+    X_train_prepared = full_pipeline.fit_transform(X_train)
 
-    X_cat['Genres'] = __split_column_to_list(X_cat['Genres'])
-    X_cat['Country'] = __split_column_to_list(X_cat['Country'])
-    X_cat['Language'] = __split_column_to_list(X_cat['Language'])
-    X_cat = __column_to_binary_encode(X_cat, 'Genres')
-    X_cat = __column_to_binary_encode(X_cat, 'Country')
-    X_cat = __column_to_binary_encode(X_cat, 'Language')
+    y_test = label_trans.transform(y_test)
+    X_test_prepated = full_pipeline.transform(X_test)
 
-    X.join(X_cat)
-    return X, y
+    return X_train_prepared, X_test_prepated, y_train, y_test
 
 
-def __split_column_to_list(column):
-    return column.map(lambda x: x.split(','))
+def save_data_to_files(datasets: list):
+    """
+       Guarda los subconjuntos en el directory de
+       ejecución como ficheros NPY
+    """
+    names = ['X_train', 'X_test', 'y_train', 'y_test']
+    for name, data in zip(names, datasets):
+        np.save(name, data)
 
 
-def __column_to_binary_encode(df, column):
-    mlb = MultiLabelBinarizer(sparse_output=True)
-    df = df.join(pd.DataFrame.sparse.from_spmatrix(
-                 mlb.fit_transform(column),
-                 index=df.index,
-                 columns=mlb.classes_))
-    return df
+def create_datasets():
+    """
+       Crea los datasets con el preprocesado realizado
+    """
+    df = load_dataset()
+    X_train, X_test, y_train, y_test = split_dataset(df)
+    X_train, X_test, y_train, y_test = preprocess_dataset(
+        X_train, X_test, y_train, y_test)
+    return X_train, X_test, y_train, y_test
