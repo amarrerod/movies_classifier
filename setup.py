@@ -12,7 +12,7 @@ with open("HISTORY.rst") as history_file:
 
 requirements = []
 
-test_requirements = ["pytest"]
+test_requirements = ["pytest", "pandas", "sklearn", "joblib"]
 
 setup(
     author="Alejandro Marrero",
@@ -36,7 +36,8 @@ setup(
     keywords="movies_classifier",
     name="movies_classifier",
     setup_requires=["pytest-runner"],
-    packages=find_packages(include=["movies_classifier", "movies_classifier.*"]),
+    packages=find_packages(
+        include=["movies_classifier", "movies_classifier.*"]),
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/amarrerod/movies_classifier",
