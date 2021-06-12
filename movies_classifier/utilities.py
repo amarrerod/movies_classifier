@@ -17,13 +17,13 @@ def load_model(model_name):
     return joblib.load(model_name)
 
 
-def save_data_to_files(datasets: list):
+def save_data_to_files(datasets: list, data_names=None):
     """
     Guarda los subconjuntos en el directory de
     ejecución como ficheros NPY
     """
     root_dir = "movies_classifier/data/"
-    names = ["X_train", "X_test", "y_train", "y_test"]
+    names = data_names if data_names else ["X_train", "X_test", "y_train", "y_test"]
     for name, data in zip(names, datasets):
         full_name = f"{root_dir}{name}"
         np.save(full_name, data)

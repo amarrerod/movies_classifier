@@ -1,5 +1,3 @@
-from inspect import FullArgSpec
-from numpy.core.numeric import full
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -29,6 +27,10 @@ def _split_dataset(df: pd.DataFrame):
     Además, crea las variables X e y para cada subconjunto
     Devuelve de la forma X_train, X_test, y_train, y_test
     """
+    cleaning_pipeline = Pipeline(
+        [("cat_to_num", Cat2Numeric()), ("categorical", Categorical())]
+    )
+    df = cleaning_pipeline.fit_transform(df)
     train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
     X_train, y_train = train_set.drop("IMDb", axis=1), train_set["IMDb"].copy()
     X_test, y_test = test_set.drop("IMDb", axis=1), test_set["IMDb"].copy()
@@ -50,34 +52,26 @@ def _preprocess_dataset(X_train, X_test, y_train, y_test):
         "Disney+",
         "Runtime",
     ]
-    cat_attrbs = ["Genres", "Country", "Language"]
 
     label_trans = Label()
     label_trans.fit(y_train)
     y_train = label_trans.transform(y_train)
+    y_test = label_trans.transform(y_test)
 
-    numeric_pipe = Pipeline(
+    full_pipeline = Pipeline(
         [
-            ("cat_to_num", Cat2Numeric()),
             ("imputer", SimpleImputer(strategy="median")),
             ("scaler", StandardScaler()),
         ]
     )
-    full_pipeline = ColumnTransformer(
-        [
-            ("numeric", numeric_pipe, num_attrbs),
-            ("categorical", Categorical(), cat_attrbs),
-        ]
-    )
 
-    X_train_prepared = full_pipeline.fit_transform(X_train)
-
-    y_test = label_trans.transform(y_test)
-    X_test_prepated = full_pipeline.transform(X_test)
+    full_pipeline.fit(X_train)
+    X_train_prepared = full_pipeline.transform(X_train)
+    X_test_prepared = full_pipeline.transform(X_test)
     # Guardamos los modelos para usar en futuras tareas
     save_model(label_trans, "movies_classifier/models/label_transformer.pkl")
     save_model(full_pipeline, "movies_classifier/models/full_pipe.pkl")
-    return X_train_prepared, X_test_prepated, y_train, y_test
+    return X_train_prepared, X_test_prepared, y_train, y_test
 
 
 def preprocess_instance(X, y=None):

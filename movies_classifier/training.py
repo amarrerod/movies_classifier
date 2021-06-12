@@ -2,7 +2,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import cross_val_score
 import numpy as np
 from movies_classifier.utilities import save_model
-from sklearn.linear_model import LinearRegression
 
 
 def create_and_train_model(X, y):
@@ -12,7 +11,7 @@ def create_and_train_model(X, y):
     """
     n_trees = 894
     forest = RandomForestRegressor(n_estimators=n_trees)
-    scores = cross_val_score(forest, X, y, scoring="neg_mean_squared_error", cv=10)
+    scores = cross_val_score(forest, X, y, scoring="neg_mean_squared_error", cv=3)
     forest_rmse = np.sqrt(-scores)
     print(f"Training done with the following resuñts")
     print(f"Scores: {forest_rmse}")
