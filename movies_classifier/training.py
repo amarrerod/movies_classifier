@@ -12,6 +12,7 @@ def create_and_train_model(X, y):
     Además lo guarda en el directorio models para usos posteriores
     """
     reg = LinearRegression()
+    reg.fit(X, y)
     scores = cross_val_score(reg, X, y, scoring="neg_mean_squared_error", cv=3)
     reg_rmse = np.sqrt(-scores)
     print(f"Training done with the following resuñts")

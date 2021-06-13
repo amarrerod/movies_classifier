@@ -8,3 +8,5 @@ X_TEST_NPY = "movies_classifier/data/X_test.npy"
 X_TRAIN_NPY = "movies_classifier/data/X_train.npy"
 Y_TEST_NPY = "movies_classifier/data/y_test.npy"
 Y_TRAIN_NPY = "movies_classifier/data/y_train.npy"
+
+EXPECTED_COLS = 384

@@ -1,3 +1,4 @@
+from numpy.lib.npyio import load
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -6,7 +7,13 @@ from sklearn.impute import SimpleImputer
 from movies_classifier.transformers import Categorical, Cat2Numeric, Label
 from sklearn.pipeline import Pipeline
 from movies_classifier.utilities import load_model, save_model
-from movies_classifier.keys import CLEAN_PIPE, MOVIES_CSV, FULL_PIPE, LABEL_TRANS
+from movies_classifier.keys import (
+    CLEAN_PIPE,
+    EXPECTED_COLS,
+    MOVIES_CSV,
+    FULL_PIPE,
+    LABEL_TRANS,
+)
 
 
 def _load_dataset(path=MOVIES_CSV):
@@ -73,18 +80,37 @@ def _preprocess_dataset(X_train, X_test, y_train, y_test):
     return X_train_prepared, X_test_prepared, y_train, y_test
 
 
-def preprocess_instance(X, y=None):
+def preprocess_instance(X: pd.DataFrame) -> np.array:
     """
     Realiza el preprocesado de una instancia
     antes de ser pasada al clasificador
     """
-    if y:
-        label_trans = load_model(LABEL_TRANS)
-        y = label_trans.transform(y)
+    must_have = [
+        "Year",
+        "Age",
+        "Rotten Tomatoes",
+        "Netflix",
+        "Hulu",
+        "Prime Video",
+        "Disney+",
+        "Runtime",
+        "Genres",
+        "Country",
+        "Language",
+    ]
+    if not all(key in X.columns for key in must_have):
+        raise RuntimeError(f"Error in X. Must contain the following keys: {must_have}")
 
-    full_pipeline = load_model(FULL_PIPE)
-    X_prepared = full_pipeline.transform(X)
-    return X_prepared, y
+    clean_pipe = load_model(CLEAN_PIPE)
+    X = clean_pipe.transform(X)
+
+    if len(X.columns) < EXPECTED_COLS:
+        for i in range(EXPECTED_COLS - len(X.columns)):
+            X[i] = 0
+
+    full_pipe = load_model(FULL_PIPE)
+    X = full_pipe.transform(X)
+    return X
 
 
 def create_datasets():

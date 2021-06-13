@@ -27,6 +27,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     description="Movies classifier done in Sklearn",
     install_requires=requirements,
@@ -36,8 +37,7 @@ setup(
     keywords="movies_classifier",
     name="movies_classifier",
     setup_requires=["pytest-runner"],
-    packages=find_packages(
-        include=["movies_classifier", "movies_classifier.*"]),
+    packages=find_packages(include=["movies_classifier", "movies_classifier.*"]),
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/amarrerod/movies_classifier",
