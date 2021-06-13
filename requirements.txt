@@ -1,6 +1,6 @@
 
 pandas
-numpy
+numpy==1.20.0
 sklearn
 joblib
 
