@@ -10,3 +10,5 @@ Y_TEST_NPY = "movies_classifier/data/y_test.npy"
 Y_TRAIN_NPY = "movies_classifier/data/y_train.npy"
 
 EXPECTED_COLS = 384
+
+ROOT_DIR = "movies_classifier/data/"

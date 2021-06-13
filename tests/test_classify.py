@@ -1,8 +1,8 @@
-from movies_classifier.keys import EXPECTED_COLS
-from movies_classifier.preprocessing import preprocess_instance
+from movies_classifier.classifier.keys import EXPECTED_COLS
+from movies_classifier.classifier.preprocessing import preprocess_instance
 import pandas as pd
 import pytest
-from movies_classifier.classify import classify
+from movies_classifier.classifier.classify import classify
 
 
 def test_classify_data():

@@ -1,13 +1,12 @@
-from numpy.lib.npyio import load
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
-from movies_classifier.classifier.transformers import Categorical, Cat2Numeric, Label
+from .transformers import *
 from sklearn.pipeline import Pipeline
-from movies_classifier.classifier.utilities import load_model, save_model
-from movies_classifier.classifier.keys import (
+from .utilities import load_model, save_model
+from .keys import (
     CLEAN_PIPE,
     EXPECTED_COLS,
     MOVIES_CSV,
@@ -78,6 +77,16 @@ def _preprocess_dataset(X_train, X_test, y_train, y_test):
     save_model(label_trans, LABEL_TRANS)
     save_model(full_pipeline, FULL_PIPE)
     return X_train_prepared, X_test_prepared, y_train, y_test
+
+
+def preprocess_instance_from_dict(X: dict) -> np.array:
+    df = pd.DataFrame(
+        X,
+        index=[
+            "0",
+        ],
+    )
+    return preprocess_instance(df)
 
 
 def preprocess_instance(X: pd.DataFrame) -> np.array:

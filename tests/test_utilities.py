@@ -2,13 +2,13 @@
 
 """Tests for `movies_classifier` package."""
 
-from movies_classifier.utilities import (
+from movies_classifier.classifier.utilities import (
     load_preprocessed_data,
     save_model,
     load_model,
     save_data_to_files,
 )
-from movies_classifier.preprocessing import create_datasets
+from movies_classifier.classifier.preprocessing import create_datasets
 from sklearn.linear_model import LinearRegression
 from os.path import isfile
 from os import remove
