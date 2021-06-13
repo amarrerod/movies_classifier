@@ -6,7 +6,7 @@ from sklearn.impute import SimpleImputer
 from movies_classifier.transformers import Categorical, Cat2Numeric, Label
 from sklearn.pipeline import Pipeline
 from movies_classifier.utilities import load_model, save_model
-from movies_classifier.keys import MOVIES_CSV, FULL_PIPE, LABEL_TRANS
+from movies_classifier.keys import CLEAN_PIPE, MOVIES_CSV, FULL_PIPE, LABEL_TRANS
 
 
 def _load_dataset(path=MOVIES_CSV):
@@ -28,6 +28,8 @@ def _split_dataset(df: pd.DataFrame):
         [("cat_to_num", Cat2Numeric()), ("categorical", Categorical())]
     )
     df = cleaning_pipeline.fit_transform(df)
+    save_model(cleaning_pipeline, CLEAN_PIPE)
+
     train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
     X_train, y_train = train_set.drop("IMDb", axis=1), train_set["IMDb"].copy()
     X_test, y_test = test_set.drop("IMDb", axis=1), test_set["IMDb"].copy()

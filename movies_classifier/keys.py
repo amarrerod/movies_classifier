@@ -1,4 +1,5 @@
 REG_MODEL = "movies_classifier/models/reg.pkl"
+CLEAN_PIPE = "movies_classifier/models/cleaner.pkl"
 LABEL_TRANS = "movies_classifier/models/label_transformer.pkl"
 FULL_PIPE = "movies_classifier/models/full_pipe.pkl"
 
