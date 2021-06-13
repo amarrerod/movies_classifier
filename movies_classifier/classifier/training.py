@@ -2,8 +2,8 @@ from sklearn import linear_model
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import cross_val_score
 import numpy as np
-from movies_classifier.utilities import save_model
-from movies_classifier.keys import REG_MODEL
+from movies_classifier.classifier.utilities import save_model
+from movies_classifier.classifier.keys import REG_MODEL
 
 
 def create_and_train_model(X, y):

@@ -1,6 +1,6 @@
-from movies_classifier.utilities import load_model
+from movies_classifier.classifier.utilities import load_model
 import numpy as np
-from movies_classifier.keys import CLEAN_PIPE, FULL_PIPE, REG_MODEL
+from movies_classifier.classifier.keys import CLEAN_PIPE, FULL_PIPE, REG_MODEL
 import pandas as pd
 
 

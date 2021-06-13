@@ -4,10 +4,10 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
-from movies_classifier.transformers import Categorical, Cat2Numeric, Label
+from movies_classifier.classifier.transformers import Categorical, Cat2Numeric, Label
 from sklearn.pipeline import Pipeline
-from movies_classifier.utilities import load_model, save_model
-from movies_classifier.keys import (
+from movies_classifier.classifier.utilities import load_model, save_model
+from movies_classifier.classifier.keys import (
     CLEAN_PIPE,
     EXPECTED_COLS,
     MOVIES_CSV,
