@@ -28,4 +28,4 @@ elif args.mode == "run":
     if args.hostname is None or args.port is None:
         raise RuntimeError(f"Hostname or port not set.\n{parser.print_help()}")
         exit(1)
-    app.run(host=args.hostname, port=args.port, debug=True)
+    app.run(host=args.hostname, port=args.port)
