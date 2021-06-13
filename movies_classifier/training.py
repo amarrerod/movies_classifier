@@ -3,6 +3,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import cross_val_score
 import numpy as np
 from movies_classifier.utilities import save_model
+from movies_classifier.keys import REG_MODEL
 
 
 def create_and_train_model(X, y):
@@ -17,5 +18,5 @@ def create_and_train_model(X, y):
     print(f"Scores: {reg_rmse}")
     print(f"Mean: {scores.mean()}")
     print(f"STD: {scores.std()}")
-    save_model(reg, "movies_classifier/models/reg.pkl")
+    save_model(reg, REG_MODEL)
     return reg
