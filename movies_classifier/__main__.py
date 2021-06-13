@@ -9,11 +9,13 @@ from movies_classifier.classifier.preprocessing import create_datasets
 from movies_classifier.classifier.training import create_and_train_model
 from argparse import ArgumentParser
 from movies_classifier.app import app
+from os import environ
 
 parser = ArgumentParser("Movies classifier")
 parser.add_argument("mode", choices=["training", "preprocessing", "run"])
 parser.add_argument("--hostname", help="Hostname to run the app")
 parser.add_argument("--port", help="Port to run the app")
+parser.add_argument("--heroku", help="Run the app in Heroku")
 
 args = parser.parse_args()
 if args.mode == "training":
@@ -25,7 +27,16 @@ elif args.mode == "preprocessing":
     save_data_to_files([X_train, X_test, y_train, y_test])
 
 elif args.mode == "run":
-    if args.hostname is None or args.port is None:
+    hostname = ""
+    port = ""
+    if args.heroku is not None:
+        hostname = "0.0.0.0"
+        port = int(environ.get("PORT", 5000))
+
+    elif args.hostname is None or args.port is None:
+        hostname = args.hostname
+        port = int(args.port)
+    else:
         raise RuntimeError(f"Hostname or port not set.\n{parser.print_help()}")
         exit(1)
-    app.run(host=args.hostname, port=args.port)
+    app.run(host=hostname, port=port)
