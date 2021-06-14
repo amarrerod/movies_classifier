@@ -9,10 +9,12 @@ movies_classifier
 .. image:: https://travis-ci.com/amarrerod/movies_classifier.svg?branch=master
     :target: https://travis-ci.com/amarrerod/movies_classifier
 
+.. image:: https://github.com/amarrerod/movies_classifier/actions/workflows/python.yml/badge.svg?branch=master
+    :target: https://github.com/amarrerod/movies_classifier/actions/workflows/python.yml
+
 .. image:: https://readthedocs.org/projects/movies-classifier/badge/?version=latest
         :target: https://movies-classifier.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
-
 
 .. image:: https://pyup.io/repos/github/amarrerod/movies_classifier/shield.svg
      :target: https://pyup.io/repos/github/amarrerod/movies_classifier/
