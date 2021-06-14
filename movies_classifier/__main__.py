@@ -33,7 +33,7 @@ elif args.mode == "run":
         hostname = "0.0.0.0"
         port = int(environ.get("PORT", 5000))
 
-    elif args.hostname is None or args.port is None:
+    elif args.hostname is not None or args.port is not None:
         hostname = args.hostname
         port = int(args.port)
     else:
